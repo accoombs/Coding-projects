@@ -1,0 +1,104 @@
+from random_word import RandomWords
+
+class Game:
+    def __init__(self):
+        self.word = str(RandomWords().get_random_word(hasDictionaryDef="true", minDictionaryCount=1, maxDictionaryCount=8, minLength=3, maxLength=5)).lower()
+        print(self.word)
+        top = [[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','-','-','-','-','-','-','-','-','-','-','-','-','-','-',' ',' ',' ',' ',' ',' '],
+                [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ']]
+    
+        middle = [[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ']for i in range(1,10)]
+
+        space =  [[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ']for i in range(4)]
+
+        self.bottom = [["- "] for i in range(len(self.word))]
+        self.board = top + middle + space
+        self.inWord = set()
+        self.repeats = set()
+        self.wrongLetters = set()
+        for i in self.word:
+            self.inWord.add(i)
+        self.wrong = 0
+        self.correct = 0
+    def move(self, wrong):
+        if(wrong >=1):
+            for i in range(8,13):
+                self.board[2][i] = '-'
+                self.board[4][i] = '-'
+            self.board[3][8] = '|' 
+            self.board[3][12] = '|'
+        if(wrong >= 2):
+            for i in range(5,9):
+                self.board[i][10] = '|'
+
+        if(wrong >= 3):
+            for i in range(6,8):
+                self.board[i][10-(5-i)] = '\\'
+        if(wrong >= 4):
+            for i in range(6,8):
+                self.board[i][10+(5-i)] = '/'
+            
+        if(wrong >= 5):
+            for i in range(9,11):
+                self.board[i][10-(8-i)] = '\\'
+            
+        if(wrong >= 6):
+            for i in range(9,11):
+                self.board[i][10+(8-i)] = '/'
+
+    def display(self):
+        for r in range(len(self.board)):
+            for c in range(len(self.board[r])):
+                print(self.board[r][c], end='')
+            print("")
+        
+        for r in range(len(self.bottom)):
+            for c in self.bottom[r]:
+                print(c, end = '')
+    def checkLetter(self, letter):
+        if letter in self.inWord and letter not in self.repeats:
+            for i in range(len(self.word)):
+                if(self.word[i] == letter):
+                    self.correct+=1
+                    self.board[len(self.board)-1][i*2] = letter
+                    self.repeats.add(letter)
+        elif(letter in self.repeats):
+            print("pick a new one")
+        else:
+            self.wrong+=1
+            self.wrongLetters.add(letter)
+            self.repeats.add(letter)
+            self.move(self.wrong)
+            
+
+
+
+Hangman = Game()
+play = True
+print("welcome to hangman where you hang a man. If you really don't wan to play hit '!' ")
+Hangman.display()
+
+while(play):
+    letter = input("    pick a letter:   ")
+    letter = letter.lower()
+    if len(letter)>1:
+        print("I said pick a letter")
+        for i in range(2): print("")
+        continue
+    elif letter == '!':
+        print("i see how it is")
+        break
+    for i in range(4): print("")
+    Hangman.checkLetter(letter)
+    Hangman.display()
+    if Hangman.wrong == 7:
+        for i in range(4): print("")
+        print("you lost, the word is: ", Hangman.word)
+        play = False
+    elif Hangman.correct == len(Hangman.word):
+        print("you actually got it congrats")
+        break
+    for i in range(2): print("")
+    if(Hangman.wrongLetters):
+        print(Hangman.wrongLetters)
+    for i in range(4): print("")
