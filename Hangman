@@ -2,8 +2,7 @@ from random_word import RandomWords
 
 class Game:
     def __init__(self):
-        self.word = str(RandomWords().get_random_word(hasDictionaryDef="true", minDictionaryCount=1, maxDictionaryCount=8, minLength=3, maxLength=5)).lower()
-        print(self.word)
+        self.word = str(RandomWords().get_random_word(hasDictionaryDef="true", minDictionaryCount=10, maxDictionaryCount=25, minLength=3, maxLength=7)).lower()
         top = [[' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','-','-','-','-','-','-','-','-','-','-','-','-','-','-',' ',' ',' ',' ',' ',' '],
                 [' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','|',' ',' ',' ',' ',' ',' ']]
     
@@ -69,13 +68,14 @@ class Game:
             self.wrongLetters.add(letter)
             self.repeats.add(letter)
             self.move(self.wrong)
-            
-
+    def spacing(self, spaces):
+        for i in range(spaces):
+            print("")       
 
 
 Hangman = Game()
 play = True
-print("welcome to hangman where you hang a man. If you really don't wan to play hit '!' ")
+print("welcome to hangman where you hang a man. If you really don't want to play hit '!' ")
 Hangman.display()
 
 while(play):
@@ -83,22 +83,22 @@ while(play):
     letter = letter.lower()
     if len(letter)>1:
         print("I said pick a letter")
-        for i in range(2): print("")
+        Hangman.spacing(2)
         continue
     elif letter == '!':
         print("i see how it is")
         break
-    for i in range(4): print("")
+    Hangman.spacing(4)
     Hangman.checkLetter(letter)
     Hangman.display()
     if Hangman.wrong == 7:
-        for i in range(4): print("")
+        Hangman.spacing(4)
         print("you lost, the word is: ", Hangman.word)
         play = False
     elif Hangman.correct == len(Hangman.word):
         print("you actually got it congrats")
         break
-    for i in range(2): print("")
+    Hangman.spacing(1)
     if(Hangman.wrongLetters):
         print(Hangman.wrongLetters)
-    for i in range(4): print("")
+    print("")
